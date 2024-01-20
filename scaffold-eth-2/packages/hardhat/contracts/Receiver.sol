@@ -112,10 +112,10 @@ contract Receiver is CCIPReceiver, OwnerIsCreator {
         );
     }
 
-    function destroy(uint256 id) public {
+    function drain(uint256 id) public {
         require(bucketIndex > id , "nonexistent bucket id");
         Bucket storage chosenBucket =  allbuckets[id];
-        require(chosenBucket.drained == false, "cant drain same bucket twice");
+        require(chosenBucket.drained == false, "cant drain empty bucket");
         chosenBucket.drained = true;
         ghoErc.transferFrom(msg.sender, address(this), chosenBucket.amount);
         if (chosenBucket.user == msg.sender) {

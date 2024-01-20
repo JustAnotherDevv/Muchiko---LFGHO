@@ -131,7 +131,7 @@ contract Sender is OwnerIsCreator, CCIPReceiver {
             tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array indicating no tokens are being sent
             extraArgs: Client._argsToBytes(
                 // Additional arguments, setting gas limit
-                Client.EVMExtraArgsV1({gasLimit: 600_000})
+                Client.EVMExtraArgsV1({gasLimit: 900_000})
             ),
             // Set the feeToken  address, indicating LINK will be used for fees
             feeToken: address(s_linkToken)
@@ -169,5 +169,9 @@ contract Sender is OwnerIsCreator, CCIPReceiver {
     function withdrawRewards() public onlyOwner {
         collateralToken.transfer(msg.sender, protocolRewards);
         protocolRewards = 0;
+    }
+
+    function setFacilitator(address _receiverFacilitator) public onlyOwner {
+        receiverFacilitator = _receiverFacilitator;
     }
 }
