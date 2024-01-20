@@ -11,16 +11,16 @@ const imageUrl = `${baseUrl}/thumbnail.jpg`;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Scaffold-ETH 2 App",
-    template: "%s | Scaffold-ETH 2",
+    default: "Muchiko",
+    template: "Muchiko",
   },
-  description: "Built with 🏗 Scaffold-ETH 2",
+  description: " Multi chain liquidity",
   openGraph: {
     title: {
-      default: "Scaffold-ETH 2 App",
-      template: "%s | Scaffold-ETH 2",
+      default: "Muchiko",
+      template: " Multi chain liquidity",
     },
-    description: "Built with 🏗 Scaffold-ETH 2",
+    description: " Multi chain liquidity",
     images: [
       {
         url: imageUrl,
@@ -31,10 +31,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: [imageUrl],
     title: {
-      default: "Scaffold-ETH 2",
-      template: "%s | Scaffold-ETH 2",
+      default: "Muchiko",
+      template: " Muchiko",
     },
-    description: "Built with 🏗 Scaffold-ETH 2",
+    description: " Muchiko",
   },
   icons: {
     icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],

@@ -1,56 +1,109 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Home: NextPage = () => {
+  const [rangeVal, setRangeVal] = useState(10);
+  const [buckets, setBuckets] = useState([]);
+
+  const handleRangeChange = event => {
+    if (event.target.value < 0 || event.target.value > 100) return;
+    setRangeVal(event.target.value);
+  };
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center mb-8">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
+        <h1 className="text-center mb-8"></h1>
+        <div className="px-5 flex flex-col text-center gap-8 bg-base-300 px-16 py-12 rounded-3xl">
+          <span className="block text-4xl font-bold">Deposit Liquidity</span>
+          <div className="px-5 flex gap-8 mx-auto">
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+              <BugAntIcon className="h-8 w-8 fill-secondary" />
+              <p>Locked Collateral</p>
+              <input
+                type="range"
+                min={0}
+                max="100"
+                value={rangeVal}
+                className="range"
+                step="1"
+                onChange={handleRangeChange}
+              />
+              <input
+                type="number"
+                min={0}
+                max="100"
+                value={rangeVal}
+                onChange={handleRangeChange}
+                placeholder="Type here"
+                className="input input-bordered w-full max-w-xs mt-4"
+              />
+            </div>
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+              <BugAntIcon className="h-8 w-8 fill-secondary" />
+              <p>Received GHO</p>
+              <input
+                type="range"
+                min={0}
+                max="100"
+                value={`${rangeVal * 2}`}
+                className="range"
+                step="1"
+                onChange={handleRangeChange}
+              />
+              <input
+                type="number"
+                min={0}
+                max="100"
+                value={rangeVal}
+                onChange={handleRangeChange}
+                placeholder="Type here"
+                className="input input-bordered w-full max-w-xs mt-4"
+              />
+            </div>
+          </div>
+          <button className="btn btn-active btn-accent">MINT</button>
+          <p className="text-gray-200 text-left w-full max-w-xl">
+            Each bucket liquidity reduces its collateral by 1% for the Protocol's token holder rewards.
           </p>
         </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contract
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
+        <div className="flex-grow bg-base-300 w-full mt-16 px-8 pt-12">
+          <div className="overflow-x-auto">
+            <table className="table flex flex-col">
+              {/* head */}
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Collateral</th>
+                  <th>Borrowed GHO</th>
+                  <th>Current Worth</th>
+                </tr>
+              </thead>
+              <tbody className="table flex flex-col justify-middle align-center mx-auto w-full my-4">
+                {buckets.length == 0 ? (
+                  <div className="mx-auto w-full">
+                    <p className="text-gray-200 text-left w-full max-w-xl">You haven't made any deposits so far.</p>
+                  </div>
+                ) : (
+                  buckets.map((bucket, i) => (
+                    <tr className="hover">
+                      <th>2</th>
+                      <td>Hart Hagerty</td>
+                      <td>Desktop Support Technician</td>
+                      <td>Purple</td>
+                      <td>
+                        <button className="btn btn-active btn-accent">RETURN</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
