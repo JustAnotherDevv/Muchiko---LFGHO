@@ -3,25 +3,31 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
-import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
+import { formatEther, formatUnits, parseEther, parseUnits } from "ethers/lib/utils";
 import type { NextPage } from "next";
 import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
-  const [rangeVal, setRangeVal] = useState(1);
-  const [ghoVal, setGhoVal] = useState(5);
+  const [rangeVal, setRangeVal] = useState(0);
+  const [ghoVal, setGhoVal] = useState(0);
   const [buckets, setBuckets] = useState([]);
 
   const chain = useNetwork();
   const { address } = useAccount();
   const { isConnected } = useAccount();
 
-  const { data: userBuckets, refetch } = useScaffoldContractRead({
+  const { data: userBucketAmount, refetch: refetchBucketAmount } = useScaffoldContractRead({
+    contractName: "Sender",
+    functionName: "userBucketAmount",
+    args: [address],
+  });
+
+  const { data: userBuckets, refetch: refetchBuckets } = useScaffoldContractRead({
     contractName: "Sender",
     functionName: "userBuckets",
-    args: [address, BigInt(0)],
+    args: ["0x6e7F1a7d1Bac9c7784c7C7Cdb098A727F62E95c7", parseUnits("0", 0)],
   });
 
   const { data: btcBalance } = useScaffoldContractRead({
@@ -30,56 +36,97 @@ const Home: NextPage = () => {
     args: [address],
   });
 
+  const { data: btcValue, refetch } = useScaffoldContractRead({
+    contractName: "Sender",
+    functionName: "getCurrentCollateralWorth",
+    args: [parseEther(rangeVal.toString())],
+    // args: [1000000000000000000],
+  });
+
+  const {
+    writeAsync: mintGho,
+    isLoading,
+    isMining,
+  } = useScaffoldContractWrite({
+    contractName: "Sender",
+    functionName: "deposit",
+    args: [parseEther(rangeVal.toString()), parseEther(ghoVal.toString())],
+    // value: parseEther("0.1"),
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
   const handleRangeChange = event => {
-    if (event.target.value < 1 || event.target.value > calc(formatUnits(btcBalance.toString(), 18))) return;
+    if (event.target.value < 1 || event.target.value > calc(formatUnits(btcBalance.toString(), 18)))
+      setRangeVal(calc(formatUnits(btcBalance.toString(), 18)));
     setRangeVal(event.target.value);
   };
 
   const handleGhoChange = event => {
-    if (event.target.value < 1 || event.target.value > 100) return;
+    if (event.target.value < 1 || event.target.value > calculatedGhoValue) setGhoVal(calculatedGhoValue);
     setGhoVal(event.target.value);
   };
 
-  const calculatedGhoValue = rangeVal / 2;
+  // const mintGho = () => {};
+
+  const calculatedGhoValue = btcValue ? parseInt(formatUnits(btcValue.toString(), 8)) / 2 : 0;
 
   useEffect(() => {
     (async () => {
       console.log(isConnected, " ", address);
       if (isConnected && address) {
-        console.log(await refetch());
-        userBuckets.refetch();
+        await refetchBucketAmount();
+        console.log(await refetchBuckets());
+        // userBuckets.refetch();
       }
     })();
   }, [isConnected, address]);
 
-  function calc(theform) {
-    var num = theform;
-    var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0];
-    console.log(with2Decimals);
+  useEffect(() => {
+    (async () => {
+      console.log(rangeVal, " ", isConnected, " ", address);
+      if (rangeVal) {
+        console.log(" !!!! ");
+        console.log(formatUnits((await refetch()).data.toString(), 0));
+        console.log(formatUnits((await refetch()).data.toString(), 8));
+        // console.log(parseInt((await refetch()).data));
+      }
+    })();
+  }, [rangeVal]);
+
+  function calc(amount) {
+    var with2Decimals = amount.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0];
+    // console.log(with2Decimals);
     return with2Decimals;
   }
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
+      <div className="flex items-center flex-col flex-grow pt-10 bg-base-300">
         <h1 className="text-center mb-8"></h1>
-        <div className="px-5 flex flex-col text-center gap-8 bg-base-300 px-16 py-12 rounded-3xl">
+        <div className="px-5 flex flex-col text-center gap-8 bg-base-200 px-16 py-12 rounded-3xl">
           <span className="block text-4xl font-bold">Deposit Liquidity</span>
-          {/* {userBuckets
+          {userBuckets
             ? JSON.parse(
                 JSON.stringify(
-                  userBuckets,
+                  userBuckets.data,
                   (key, value) => (typeof value === "bigint" ? value.toString() : value), // return everything else unchanged
                 ),
               )
-            : "empty"} */}
+            : "empty"}
           {/* {parseInt(userBuckets)} */}
-          {btcBalance ? parseInt(formatUnits(btcBalance.toString(), 18)) : ""}
+          {/* {btcBalance ? parseInt(formatUnits(btcBalance.toString(), 18)) : ""} */}
+          {/* {JSON.parse(btcValue)} */}
+          {/* {btcValue ? parseInt(formatUnits(btcValue.toString(), 8)) : ""} */}
+          <br />
+          {parseInt(userBucketAmount)}
+          {/* {ghoVal} */}
           <div className="px-5 flex flex-col gap-12 mx-auto w-full">
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-full rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>Locked Collateral</p>
-              <p className="font-bold">MAX: {btcBalance ? calc(formatUnits(btcBalance.toString(), 18)) : 0}</p>
               <input
                 type="range"
                 min={0}
@@ -89,6 +136,7 @@ const Home: NextPage = () => {
                 step="1"
                 onChange={handleRangeChange}
               />
+              <p className="font-bold">MAX: {btcBalance ? calc(formatUnits(btcBalance.toString(), 18)) : 0}</p>
               <input
                 type="number"
                 min={0}
@@ -111,6 +159,7 @@ const Home: NextPage = () => {
                 step="1"
                 onChange={handleGhoChange}
               />
+              <p className="font-bold">MAX: {calculatedGhoValue ? calculatedGhoValue : 0}</p>
               <input
                 type="number"
                 min={0}
@@ -122,7 +171,9 @@ const Home: NextPage = () => {
               />
             </div>
           </div>
-          <button className="btn btn-active btn-accent">MINT</button>
+          <button className="btn btn-active btn-accent" onClick={mintGho}>
+            MINT
+          </button>
           <p className="text-gray-200 text-left w-full max-w-xl">
             Each bucket liquidity reduces its collateral by 1% for the Protocol's token holder rewards.
           </p>

@@ -25,7 +25,7 @@ struct Bucket {
 }
 
 /// @title - A simple contract for receiving string data across chains.
-contract Receiver is CCIPReceiver, OwnerIsCreator {
+contract FacilitatorReceiver is CCIPReceiver, OwnerIsCreator {
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
 
     event MessageSent(

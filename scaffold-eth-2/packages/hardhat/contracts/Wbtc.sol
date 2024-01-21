@@ -11,7 +11,9 @@ contract BTC is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         ERC20("BTC", "BTC")
         Ownable()
         ERC20Permit("BTC")
-    {}
+    {
+        mint(msg.sender, 250000000000000000000);
+    }
 
     function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);

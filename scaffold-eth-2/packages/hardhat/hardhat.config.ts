@@ -30,8 +30,8 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  // defaultNetwork: "sepolia", //"polygonMumbai" // "localhost",
-  defaultNetwork: "polygonMumbai",
+  defaultNetwork: "sepolia", //"polygonMumbai" // "localhost",
+  // defaultNetwork: "polygonMumbai",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer

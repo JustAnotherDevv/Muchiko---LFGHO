@@ -24,7 +24,7 @@ struct Bucket {
 }
 
 /// @title - A simple contract for sending string data across chains.
-contract Sender is OwnerIsCreator, CCIPReceiver {
+contract CollateralLockerSender is OwnerIsCreator, CCIPReceiver {
     // Custom errors to provide more descriptive revert messages.
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
 
@@ -48,6 +48,7 @@ contract Sender is OwnerIsCreator, CCIPReceiver {
 
     Bucket[] public buckets;
     mapping(address => uint256[]) public userBuckets;
+    mapping(address => uint256) public userBucketAmount;
 
     /// @notice Constructor initializes the contract with the router address.
     /// @param _router The address of the router contract.
@@ -78,12 +79,15 @@ contract Sender is OwnerIsCreator, CCIPReceiver {
 
     function deposit(uint256 _collateral, uint256 _amount) public {
         collateralToken.transferFrom(msg.sender, address(this), _collateral);
-        uint256 collateralWorth = (uint256(getChainlinkDataFeedLatestAnswer()) * _collateral) / uint256(getChainlinkDecimal()) / 18;
-        require((collateralWorth / 2) >= _amount , "low collateral");
-        require(collateralWorth != 0 || _amount != 0 , "low collateral");
+        uint256 collateralWorth = getCurrentCollateralWorth(_collateral);
+        uint256 decimals = uint256(getChainlinkDecimal());
+        // require((collateralWorth / 200) >= _amount , "low collateral");
+        require((collateralWorth / 2) >= _amount / (10**10) , "low collateral");
+        require(collateralWorth != 0 || _amount != 0 , "collateral worth is 0");
 
         sendMessage(receiverFacilitator, "DEPOSIT", _collateral, _amount, collateralWorth, buckets.length);
         userBuckets[msg.sender].push(buckets.length);
+        userBucketAmount[msg.sender]++;
         buckets.push(
             Bucket({
                 collateral: _collateral,
@@ -93,6 +97,16 @@ contract Sender is OwnerIsCreator, CCIPReceiver {
                 drained: false
             })
                 );
+    }
+
+    function getCurrentCollateralWorth(uint256 _collateral) public view returns (uint256) {
+        uint256 tokenPrice = uint256(getChainlinkDataFeedLatestAnswer());
+        uint256 decimals = uint256(getChainlinkDecimal());
+        require(decimals > 0, "Invalid decimals");
+
+        // return (_collateral * tokenPrice) / (10**decimals) / (10**18);
+
+        return (_collateral * tokenPrice) / (10**18);// / (10**decimals) / (10**18);
     }
 
     function getChainlinkDecimal() public view returns (uint8) {

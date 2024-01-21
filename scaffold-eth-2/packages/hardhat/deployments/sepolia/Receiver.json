@@ -1,0 +1,845 @@
+{
+  "address": "0xBD7255b67CA7FbD78dc06554c85Afc11aCE5A584",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "router",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_ghoToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_link",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_senderVault",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "router",
+          "type": "address"
+        }
+      ],
+      "name": "InvalidRouter",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "currentBalance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "calculatedFees",
+          "type": "uint256"
+        }
+      ],
+      "name": "NotEnoughBalance",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "messageId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "sourceChainSelector",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "name": "MessageReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "messageId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "destinationChainSelector",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "feeToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "fees",
+          "type": "uint256"
+        }
+      ],
+      "name": "MessageSent",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "activeBuckets",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "allbuckets",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "collateral",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "CollateralWorth",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "drained",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "messageId",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sourceChainSelector",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bytes",
+              "name": "sender",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "data",
+              "type": "bytes"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Client.EVMTokenAmount[]",
+              "name": "destTokenAmounts",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct Client.Any2EVMMessage",
+          "name": "message",
+          "type": "tuple"
+        }
+      ],
+      "name": "ccipReceive",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "destinationChainSelector",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "drain",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getChainlinkDataFeedLatestAnswer",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getChainlinkDecimal",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLastReceivedMessageDetails",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "messageId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getRouter",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ghoErc",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ghoToken",
+      "outputs": [
+        {
+          "internalType": "contract IGhoToken",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "sendMessage",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "messageId",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "senderVault",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "userBuckets",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x6a9628de0e64414d97a41c1b2e9442018017aada6a357ea913d8a12ccf31cfb8",
+  "receipt": {
+    "to": null,
+    "from": "0x6e7F1a7d1Bac9c7784c7C7Cdb098A727F62E95c7",
+    "contractAddress": "0xBD7255b67CA7FbD78dc06554c85Afc11aCE5A584",
+    "transactionIndex": 38,
+    "gasUsed": "1515961",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x88e16cbab0c418c9baa68ccbf8984eed167d227d055c7dd7eca5bc01d5f2e129",
+    "transactionHash": "0x6a9628de0e64414d97a41c1b2e9442018017aada6a357ea913d8a12ccf31cfb8",
+    "logs": [],
+    "blockNumber": 5127715,
+    "cumulativeGasUsed": "8457665",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x1035cabc275068e0f4b745a29cedf38e13af41b1",
+    "0xBA39b8534DF42a2f7F337E6491fF0D768AD30c06",
+    "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+    "0xaB431275Ac8796E456150eFfE629967a7ADEe31D"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "e31e070b8f9806202fcc9216d0c90390",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"router\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_ghoToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_link\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_senderVault\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"router\",\"type\":\"address\"}],\"name\":\"InvalidRouter\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"currentBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"calculatedFees\",\"type\":\"uint256\"}],\"name\":\"NotEnoughBalance\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"messageId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"sourceChainSelector\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"text\",\"type\":\"string\"}],\"name\":\"MessageReceived\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"messageId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"destinationChainSelector\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"feeToken\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fees\",\"type\":\"uint256\"}],\"name\":\"MessageSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"OwnershipTransferRequested\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"acceptOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"activeBuckets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"allbuckets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"collateral\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"CollateralWorth\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"drained\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"messageId\",\"type\":\"bytes32\"},{\"internalType\":\"uint64\",\"name\":\"sourceChainSelector\",\"type\":\"uint64\"},{\"internalType\":\"bytes\",\"name\":\"sender\",\"type\":\"bytes\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct Client.EVMTokenAmount[]\",\"name\":\"destTokenAmounts\",\"type\":\"tuple[]\"}],\"internalType\":\"struct Client.Any2EVMMessage\",\"name\":\"message\",\"type\":\"tuple\"}],\"name\":\"ccipReceive\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"destinationChainSelector\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"drain\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getChainlinkDataFeedLatestAnswer\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getChainlinkDecimal\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLastReceivedMessageDetails\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"messageId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"text\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRouter\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ghoErc\",\"outputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ghoToken\",\"outputs\":[{\"internalType\":\"contract IGhoToken\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"sendMessage\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"messageId\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"senderVault\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"userBuckets\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"ccipReceive((bytes32,uint64,bytes,bytes,(address,uint256)[]))\":{\"details\":\"Note ensure you check the msg.sender is the OffRampRouter\",\"params\":{\"message\":\"CCIP Message\"}},\"constructor\":{\"params\":{\"router\":\"The address of the router contract.\"}},\"getLastReceivedMessageDetails()\":{\"returns\":{\"messageId\":\"The ID of the last received message.\",\"text\":\"The last received text.\"}},\"getRouter()\":{\"returns\":{\"_0\":\"i_router address\"}},\"supportsInterface(bytes4)\":{\"details\":\"Should indicate whether the contract implements IAny2EVMMessageReceiver e.g. return interfaceId == type(IAny2EVMMessageReceiver).interfaceId || interfaceId == type(IERC165).interfaceId This allows CCIP to check if ccipReceive is available before calling it. If this returns false or reverts, only tokens are transferred to the receiver. If this returns true, tokens are transferred and ccipReceive is called atomically. Additionally, if the receiver address does not have code associated with it at the time of execution (EXTCODESIZE returns 0), only tokens will be transferred.\",\"params\":{\"interfaceId\":\"The interfaceId to check\"},\"returns\":{\"_0\":\"true if the interfaceId is supported\"}}},\"title\":\"- A simple contract for receiving string data across chains.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"acceptOwnership()\":{\"notice\":\"Allows an ownership transfer to be completed by the recipient.\"},\"ccipReceive((bytes32,uint64,bytes,bytes,(address,uint256)[]))\":{\"notice\":\"Called by the Router to deliver a message. If this reverts, any token transfers also revert. The message will move to a FAILED state and become available for manual execution.\"},\"constructor\":{\"notice\":\"Constructor initializes the contract with the router address.\"},\"getLastReceivedMessageDetails()\":{\"notice\":\"Fetches the details of the last received message.\"},\"getRouter()\":{\"notice\":\"Return the current router\"},\"owner()\":{\"notice\":\"Get the current owner\"},\"supportsInterface(bytes4)\":{\"notice\":\"IERC165 supports an interfaceId\"},\"transferOwnership(address)\":{\"notice\":\"Allows an owner to begin transferring ownership to a new address, pending.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Receiver.sol\":\"FacilitatorReceiver\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport {IAny2EVMMessageReceiver} from \\\"../interfaces/IAny2EVMMessageReceiver.sol\\\";\\n\\nimport {Client} from \\\"../libraries/Client.sol\\\";\\n\\nimport {IERC165} from \\\"../../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/introspection/IERC165.sol\\\";\\n\\n/// @title CCIPReceiver - Base contract for CCIP applications that can receive messages.\\nabstract contract CCIPReceiver is IAny2EVMMessageReceiver, IERC165 {\\n  address internal immutable i_router;\\n\\n  constructor(address router) {\\n    if (router == address(0)) revert InvalidRouter(address(0));\\n    i_router = router;\\n  }\\n\\n  /// @notice IERC165 supports an interfaceId\\n  /// @param interfaceId The interfaceId to check\\n  /// @return true if the interfaceId is supported\\n  /// @dev Should indicate whether the contract implements IAny2EVMMessageReceiver\\n  /// e.g. return interfaceId == type(IAny2EVMMessageReceiver).interfaceId || interfaceId == type(IERC165).interfaceId\\n  /// This allows CCIP to check if ccipReceive is available before calling it.\\n  /// If this returns false or reverts, only tokens are transferred to the receiver.\\n  /// If this returns true, tokens are transferred and ccipReceive is called atomically.\\n  /// Additionally, if the receiver address does not have code associated with\\n  /// it at the time of execution (EXTCODESIZE returns 0), only tokens will be transferred.\\n  function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {\\n    return interfaceId == type(IAny2EVMMessageReceiver).interfaceId || interfaceId == type(IERC165).interfaceId;\\n  }\\n\\n  /// @inheritdoc IAny2EVMMessageReceiver\\n  function ccipReceive(Client.Any2EVMMessage calldata message) external virtual override onlyRouter {\\n    _ccipReceive(message);\\n  }\\n\\n  /// @notice Override this function in your implementation.\\n  /// @param message Any2EVMMessage\\n  function _ccipReceive(Client.Any2EVMMessage memory message) internal virtual;\\n\\n  /////////////////////////////////////////////////////////////////////\\n  // Plumbing\\n  /////////////////////////////////////////////////////////////////////\\n\\n  /// @notice Return the current router\\n  /// @return i_router address\\n  function getRouter() public view returns (address) {\\n    return address(i_router);\\n  }\\n\\n  error InvalidRouter(address router);\\n\\n  /// @dev only calls from the set router are accepted.\\n  modifier onlyRouter() {\\n    if (msg.sender != address(i_router)) revert InvalidRouter(msg.sender);\\n    _;\\n  }\\n}\\n\",\"keccak256\":\"0xd59dbf083bfad8fe95248cac59822ade0bc7d70e50ab05e366cb35a2b2ea99f6\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IAny2EVMMessageReceiver.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport {Client} from \\\"../libraries/Client.sol\\\";\\n\\n/// @notice Application contracts that intend to receive messages from\\n/// the router should implement this interface.\\ninterface IAny2EVMMessageReceiver {\\n  /// @notice Called by the Router to deliver a message.\\n  /// If this reverts, any token transfers also revert. The message\\n  /// will move to a FAILED state and become available for manual execution.\\n  /// @param message CCIP Message\\n  /// @dev Note ensure you check the msg.sender is the OffRampRouter\\n  function ccipReceive(Client.Any2EVMMessage calldata message) external;\\n}\\n\",\"keccak256\":\"0xd2a05a4f58a453cbf8cfa6aa78f58cb8e42091b3a025f711a0aa51f584e16b48\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport {Client} from \\\"../libraries/Client.sol\\\";\\n\\ninterface IRouterClient {\\n  error UnsupportedDestinationChain(uint64 destChainSelector);\\n  error InsufficientFeeTokenAmount();\\n  error InvalidMsgValue();\\n\\n  /// @notice Checks if the given chain ID is supported for sending/receiving.\\n  /// @param chainSelector The chain to check.\\n  /// @return supported is true if it is supported, false if not.\\n  function isChainSupported(uint64 chainSelector) external view returns (bool supported);\\n\\n  /// @notice Gets a list of all supported tokens which can be sent or received\\n  /// to/from a given chain id.\\n  /// @param chainSelector The chainSelector.\\n  /// @return tokens The addresses of all tokens that are supported.\\n  function getSupportedTokens(uint64 chainSelector) external view returns (address[] memory tokens);\\n\\n  /// @param destinationChainSelector The destination chainSelector\\n  /// @param message The cross-chain CCIP message including data and/or tokens\\n  /// @return fee returns execution fee for the message\\n  /// delivery to destination chain, denominated in the feeToken specified in the message.\\n  /// @dev Reverts with appropriate reason upon invalid message.\\n  function getFee(\\n    uint64 destinationChainSelector,\\n    Client.EVM2AnyMessage memory message\\n  ) external view returns (uint256 fee);\\n\\n  /// @notice Request a message to be sent to the destination chain\\n  /// @param destinationChainSelector The destination chain ID\\n  /// @param message The cross-chain CCIP message including data and/or tokens\\n  /// @return messageId The message ID\\n  /// @dev Note if msg.value is larger than the required fee (from getFee) we accept\\n  /// the overpayment with no refund.\\n  /// @dev Reverts with appropriate reason upon invalid message.\\n  function ccipSend(\\n    uint64 destinationChainSelector,\\n    Client.EVM2AnyMessage calldata message\\n  ) external payable returns (bytes32);\\n}\\n\",\"keccak256\":\"0x7f2fdd93e516b7476c6fab099f6806adf5ceaf399b0cc415f6b9ede890f2379b\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\n// End consumer library.\\nlibrary Client {\\n  /// @dev RMN depends on this struct, if changing, please notify the RMN maintainers.\\n  struct EVMTokenAmount {\\n    address token; // token address on the local chain.\\n    uint256 amount; // Amount of tokens.\\n  }\\n\\n  struct Any2EVMMessage {\\n    bytes32 messageId; // MessageId corresponding to ccipSend on source.\\n    uint64 sourceChainSelector; // Source chain selector.\\n    bytes sender; // abi.decode(sender) if coming from an EVM chain.\\n    bytes data; // payload sent in original message.\\n    EVMTokenAmount[] destTokenAmounts; // Tokens and their amounts in their destination chain representation.\\n  }\\n\\n  // If extraArgs is empty bytes, the default is 200k gas limit.\\n  struct EVM2AnyMessage {\\n    bytes receiver; // abi.encode(receiver address) for dest EVM chains\\n    bytes data; // Data payload\\n    EVMTokenAmount[] tokenAmounts; // Token transfers\\n    address feeToken; // Address of feeToken. address(0) means you will send msg.value.\\n    bytes extraArgs; // Populate this with _argsToBytes(EVMExtraArgsV1)\\n  }\\n\\n  // bytes4(keccak256(\\\"CCIP EVMExtraArgsV1\\\"));\\n  bytes4 public constant EVM_EXTRA_ARGS_V1_TAG = 0x97a657c9;\\n  struct EVMExtraArgsV1 {\\n    uint256 gasLimit;\\n  }\\n\\n  function _argsToBytes(EVMExtraArgsV1 memory extraArgs) internal pure returns (bytes memory bts) {\\n    return abi.encodeWithSelector(EVM_EXTRA_ARGS_V1_TAG, extraArgs);\\n  }\\n}\\n\",\"keccak256\":\"0x8af3ac1085c87342373772fb1a0107c7b90258e6bfed318ab2a601a14477e679\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/shared/access/ConfirmedOwner.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"./ConfirmedOwnerWithProposal.sol\\\";\\n\\n/**\\n * @title The ConfirmedOwner contract\\n * @notice A contract with helpers for basic contract ownership.\\n */\\ncontract ConfirmedOwner is ConfirmedOwnerWithProposal {\\n  constructor(address newOwner) ConfirmedOwnerWithProposal(newOwner, address(0)) {}\\n}\\n\",\"keccak256\":\"0x99d0b0786fe368970009c703f2249bfbc56340ddf1a28b60d2915bb58c34cd72\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/shared/access/ConfirmedOwnerWithProposal.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"../interfaces/IOwnable.sol\\\";\\n\\n/**\\n * @title The ConfirmedOwner contract\\n * @notice A contract with helpers for basic contract ownership.\\n */\\ncontract ConfirmedOwnerWithProposal is IOwnable {\\n  address private s_owner;\\n  address private s_pendingOwner;\\n\\n  event OwnershipTransferRequested(address indexed from, address indexed to);\\n  event OwnershipTransferred(address indexed from, address indexed to);\\n\\n  constructor(address newOwner, address pendingOwner) {\\n    require(newOwner != address(0), \\\"Cannot set owner to zero\\\");\\n\\n    s_owner = newOwner;\\n    if (pendingOwner != address(0)) {\\n      _transferOwnership(pendingOwner);\\n    }\\n  }\\n\\n  /**\\n   * @notice Allows an owner to begin transferring ownership to a new address,\\n   * pending.\\n   */\\n  function transferOwnership(address to) public override onlyOwner {\\n    _transferOwnership(to);\\n  }\\n\\n  /**\\n   * @notice Allows an ownership transfer to be completed by the recipient.\\n   */\\n  function acceptOwnership() external override {\\n    require(msg.sender == s_pendingOwner, \\\"Must be proposed owner\\\");\\n\\n    address oldOwner = s_owner;\\n    s_owner = msg.sender;\\n    s_pendingOwner = address(0);\\n\\n    emit OwnershipTransferred(oldOwner, msg.sender);\\n  }\\n\\n  /**\\n   * @notice Get the current owner\\n   */\\n  function owner() public view override returns (address) {\\n    return s_owner;\\n  }\\n\\n  /**\\n   * @notice validate, transfer ownership, and emit relevant events\\n   */\\n  function _transferOwnership(address to) private {\\n    require(to != msg.sender, \\\"Cannot transfer to self\\\");\\n\\n    s_pendingOwner = to;\\n\\n    emit OwnershipTransferRequested(s_owner, to);\\n  }\\n\\n  /**\\n   * @notice validate access\\n   */\\n  function _validateOwnership() internal view {\\n    require(msg.sender == s_owner, \\\"Only callable by owner\\\");\\n  }\\n\\n  /**\\n   * @notice Reverts if called by anyone other than the contract owner.\\n   */\\n  modifier onlyOwner() {\\n    _validateOwnership();\\n    _;\\n  }\\n}\\n\",\"keccak256\":\"0x215529a99534a40e6257ef2282a91ea4a95b66debc3997866406907622efb405\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport {ConfirmedOwner} from \\\"./ConfirmedOwner.sol\\\";\\n\\n/// @title The OwnerIsCreator contract\\n/// @notice A contract with helpers for basic contract ownership.\\ncontract OwnerIsCreator is ConfirmedOwner {\\n  constructor() ConfirmedOwner(msg.sender) {}\\n}\\n\",\"keccak256\":\"0x895af02d6a3df2930bbb6ec1f2d68118b492ca6e710ba0c34fcb6b574a0906aa\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/shared/interfaces/IOwnable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface IOwnable {\\n  function owner() external returns (address);\\n\\n  function transferOwnership(address recipient) external;\\n\\n  function acceptOwnership() external;\\n}\\n\",\"keccak256\":\"0x885de72b7b4e4f1bf8ba817a3f2bcc37fd9022d342c4ce76782151c30122d767\",\"license\":\"MIT\"},\"@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/contracts/utils/introspection/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC165 standard, as defined in the\\n * https://eips.ethereum.org/EIPS/eip-165[EIP].\\n *\\n * Implementers can declare support of contract interfaces, which can then be\\n * queried by others ({ERC165Checker}).\\n *\\n * For an implementation, see {ERC165}.\\n */\\ninterface IERC165 {\\n    /**\\n     * @dev Returns true if this contract implements the interface defined by\\n     * `interfaceId`. See the corresponding\\n     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]\\n     * to learn more about how these ids are created.\\n     *\\n     * This function call must use less than 30 000 gas.\\n     */\\n    function supportsInterface(bytes4 interfaceId) external view returns (bool);\\n}\",\"keccak256\":\"0xa36a31b4bb17fad88d023474893b3b895fa421650543b1ce5aefc78efbd43244\",\"license\":\"MIT\"},\"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface AggregatorV3Interface {\\n  function decimals() external view returns (uint8);\\n\\n  function description() external view returns (string memory);\\n\\n  function version() external view returns (uint256);\\n\\n  function getRoundData(\\n    uint80 _roundId\\n  ) external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\\n}\\n\",\"keccak256\":\"0xfe4e8bb4861bb3860ba890ab91a3b818ec66e5a8f544fb608cfcb73f433472cd\",\"license\":\"MIT\"},\"@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface LinkTokenInterface {\\n  function allowance(address owner, address spender) external view returns (uint256 remaining);\\n\\n  function approve(address spender, uint256 value) external returns (bool success);\\n\\n  function balanceOf(address owner) external view returns (uint256 balance);\\n\\n  function decimals() external view returns (uint8 decimalPlaces);\\n\\n  function decreaseApproval(address spender, uint256 addedValue) external returns (bool success);\\n\\n  function increaseApproval(address spender, uint256 subtractedValue) external;\\n\\n  function name() external view returns (string memory tokenName);\\n\\n  function symbol() external view returns (string memory tokenSymbol);\\n\\n  function totalSupply() external view returns (uint256 totalTokensIssued);\\n\\n  function transfer(address to, uint256 value) external returns (bool success);\\n\\n  function transferAndCall(address to, uint256 value, bytes calldata data) external returns (bool success);\\n\\n  function transferFrom(address from, address to, uint256 value) external returns (bool success);\\n}\\n\",\"keccak256\":\"0xac02fbc0c7d194e525a71f524d1f7c472df73e19c2b527d7b529badaeaf0ec51\",\"license\":\"MIT\"},\"@openzeppelin/contracts/access/IAccessControl.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (access/IAccessControl.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev External interface of AccessControl declared to support ERC165 detection.\\n */\\ninterface IAccessControl {\\n    /**\\n     * @dev Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole`\\n     *\\n     * `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite\\n     * {RoleAdminChanged} not being emitted signaling this.\\n     *\\n     * _Available since v3.1._\\n     */\\n    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);\\n\\n    /**\\n     * @dev Emitted when `account` is granted `role`.\\n     *\\n     * `sender` is the account that originated the contract call, an admin role\\n     * bearer except when using {AccessControl-_setupRole}.\\n     */\\n    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);\\n\\n    /**\\n     * @dev Emitted when `account` is revoked `role`.\\n     *\\n     * `sender` is the account that originated the contract call:\\n     *   - if using `revokeRole`, it is the admin role bearer\\n     *   - if using `renounceRole`, it is the role bearer (i.e. `account`)\\n     */\\n    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);\\n\\n    /**\\n     * @dev Returns `true` if `account` has been granted `role`.\\n     */\\n    function hasRole(bytes32 role, address account) external view returns (bool);\\n\\n    /**\\n     * @dev Returns the admin role that controls `role`. See {grantRole} and\\n     * {revokeRole}.\\n     *\\n     * To change a role's admin, use {AccessControl-_setRoleAdmin}.\\n     */\\n    function getRoleAdmin(bytes32 role) external view returns (bytes32);\\n\\n    /**\\n     * @dev Grants `role` to `account`.\\n     *\\n     * If `account` had not been already granted `role`, emits a {RoleGranted}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     */\\n    function grantRole(bytes32 role, address account) external;\\n\\n    /**\\n     * @dev Revokes `role` from `account`.\\n     *\\n     * If `account` had been granted `role`, emits a {RoleRevoked} event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     */\\n    function revokeRole(bytes32 role, address account) external;\\n\\n    /**\\n     * @dev Revokes `role` from the calling account.\\n     *\\n     * Roles are often managed via {grantRole} and {revokeRole}: this function's\\n     * purpose is to provide a mechanism for accounts to lose their privileges\\n     * if they are compromised (such as when a trusted device is misplaced).\\n     *\\n     * If the calling account had been granted `role`, emits a {RoleRevoked}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must be `account`.\\n     */\\n    function renounceRole(bytes32 role, address account) external;\\n}\\n\",\"keccak256\":\"0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/IERC20.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `to`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address to, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `from` to `to` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address from, address to, uint256 amount) external returns (bool);\\n}\\n\",\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\"},\"contracts/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: UNLICENSED\\npragma solidity ^0.8.13;\\n\\ninterface IERC20 {\\n    function totalSupply() external view returns (uint256);\\n\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    function transfer(address recipient, uint256 amount) external returns (bool);\\n\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);\\n\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n}\\n\",\"keccak256\":\"0x449e21e9e8dd018af71203a3f1a7c3e2c0c1e3c4bc03da2c37601b3539696e7b\",\"license\":\"UNLICENSED\"},\"contracts/IGhoToken.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\nimport {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';\\nimport {IAccessControl} from '@openzeppelin/contracts/access/IAccessControl.sol';\\n\\n/**\\n * @title IGhoToken\\n * @author Aave\\n */\\ninterface IGhoToken is IERC20, IAccessControl {\\n  struct Facilitator {\\n    uint128 bucketCapacity;\\n    uint128 bucketLevel;\\n    string label;\\n  }\\n\\n  /**\\n   * @dev Emitted when a new facilitator is added\\n   * @param facilitatorAddress The address of the new facilitator\\n   * @param label A hashed human readable identifier for the facilitator\\n   * @param bucketCapacity The initial capacity of the facilitator's bucket\\n   */\\n  event FacilitatorAdded(\\n    address indexed facilitatorAddress,\\n    bytes32 indexed label,\\n    uint256 bucketCapacity\\n  );\\n\\n  /**\\n   * @dev Emitted when a facilitator is removed\\n   * @param facilitatorAddress The address of the removed facilitator\\n   */\\n  event FacilitatorRemoved(address indexed facilitatorAddress);\\n\\n  /**\\n   * @dev Emitted when the bucket capacity of a facilitator is updated\\n   * @param facilitatorAddress The address of the facilitator whose bucket capacity is being changed\\n   * @param oldCapacity The old capacity of the bucket\\n   * @param newCapacity The new capacity of the bucket\\n   */\\n  event FacilitatorBucketCapacityUpdated(\\n    address indexed facilitatorAddress,\\n    uint256 oldCapacity,\\n    uint256 newCapacity\\n  );\\n\\n  /**\\n   * @dev Emitted when the bucket level changed\\n   * @param facilitatorAddress The address of the facilitator whose bucket level is being changed\\n   * @param oldLevel The old level of the bucket\\n   * @param newLevel The new level of the bucket\\n   */\\n  event FacilitatorBucketLevelUpdated(\\n    address indexed facilitatorAddress,\\n    uint256 oldLevel,\\n    uint256 newLevel\\n  );\\n\\n  /**\\n   * @notice Returns the identifier of the Facilitator Manager Role\\n   * @return The bytes32 id hash of the FacilitatorManager role\\n   */\\n  function FACILITATOR_MANAGER_ROLE() external pure returns (bytes32);\\n\\n  /**\\n   * @notice Returns the identifier of the Bucket Manager Role\\n   * @return The bytes32 id hash of the BucketManager role\\n   */\\n  function BUCKET_MANAGER_ROLE() external pure returns (bytes32);\\n\\n  /**\\n   * @notice Mints the requested amount of tokens to the account address.\\n   * @dev Only facilitators with enough bucket capacity available can mint.\\n   * @dev The bucket level is increased upon minting.\\n   * @param account The address receiving the GHO tokens\\n   * @param amount The amount to mint\\n   */\\n  function mint(address account, uint256 amount) external;\\n\\n  /**\\n   * @notice Burns the requested amount of tokens from the account address.\\n   * @dev Only active facilitators (bucket level > 0) can burn.\\n   * @dev The bucket level is decreased upon burning.\\n   * @param amount The amount to burn\\n   */\\n  function burn(uint256 amount) external;\\n\\n  /**\\n   * @notice Add the facilitator passed with the parameters to the facilitators list.\\n   * @dev Only accounts with `FACILITATOR_MANAGER_ROLE` role can call this function\\n   * @param facilitatorAddress The address of the facilitator to add\\n   * @param facilitatorLabel A human readable identifier for the facilitator\\n   * @param bucketCapacity The upward limit of GHO can be minted by the facilitator\\n   */\\n  function addFacilitator(\\n    address facilitatorAddress,\\n    string calldata facilitatorLabel,\\n    uint128 bucketCapacity\\n  ) external;\\n\\n  /**\\n   * @notice Remove the facilitator from the facilitators list.\\n   * @dev Only accounts with `FACILITATOR_MANAGER_ROLE` role can call this function\\n   * @param facilitatorAddress The address of the facilitator to remove\\n   */\\n  function removeFacilitator(address facilitatorAddress) external;\\n\\n  /**\\n   * @notice Set the bucket capacity of the facilitator.\\n   * @dev Only accounts with `BUCKET_MANAGER_ROLE` role can call this function\\n   * @param facilitator The address of the facilitator\\n   * @param newCapacity The new capacity of the bucket\\n   */\\n  function setFacilitatorBucketCapacity(address facilitator, uint128 newCapacity) external;\\n\\n  /**\\n   * @notice Returns the facilitator data\\n   * @param facilitator The address of the facilitator\\n   * @return The facilitator configuration\\n   */\\n  function getFacilitator(address facilitator) external view returns (Facilitator memory);\\n\\n  /**\\n   * @notice Returns the bucket configuration of the facilitator\\n   * @param facilitator The address of the facilitator\\n   * @return The capacity of the facilitator's bucket\\n   * @return The level of the facilitator's bucket\\n   */\\n  function getFacilitatorBucket(address facilitator) external view returns (uint256, uint256);\\n\\n  /**\\n   * @notice Returns the list of the addresses of the active facilitator\\n   * @return The list of the facilitators addresses\\n   */\\n  function getFacilitatorsList() external view returns (address[] memory);\\n}\",\"keccak256\":\"0xb617ec60f759db90f62d337376fa0a1a4ee9b68e6591d7852b1858780f1d9d79\",\"license\":\"MIT\"},\"contracts/Receiver.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.20;\\n\\nimport {Client} from \\\"@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol\\\";\\nimport {CCIPReceiver} from \\\"@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol\\\";\\nimport {IGhoToken} from './IGhoToken.sol';\\nimport \\\"./IERC20.sol\\\";\\nimport {LinkTokenInterface} from \\\"@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol\\\";\\nimport \\\"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\\\";\\nimport {IRouterClient} from \\\"@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol\\\";\\nimport {OwnerIsCreator} from \\\"@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol\\\";\\n\\n/**\\n * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.\\n * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.\\n * DO NOT USE THIS CODE IN PRODUCTION.\\n */\\n\\nstruct Bucket {\\n    uint256 collateral;\\n    uint256 amount;\\n    uint256 CollateralWorth;\\n    address user;\\n    bool drained;\\n}\\n\\n/// @title - A simple contract for receiving string data across chains.\\ncontract FacilitatorReceiver is CCIPReceiver, OwnerIsCreator {\\n    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.\\n\\n    event MessageSent(\\n        bytes32 indexed messageId, // The unique ID of the CCIP message.\\n        uint64 indexed destinationChainSelector, // The chain selector of the destination chain.\\n        address receiver, // The address of the receiver on the destination chain.\\n        uint256 id, // The id being sent.\\n        address feeToken, // the token address used to pay CCIP fees.\\n        uint256 fees // The fees paid for sending the CCIP message.\\n    );\\n\\n    // Event emitted when a message is received from another chain.\\n    event MessageReceived(\\n        bytes32 indexed messageId, // The unique ID of the message.\\n        uint64 indexed sourceChainSelector, // The chain selector of the source chain.\\n        address sender, // The address of the sender from the source chain.\\n        string text // The text that was received.\\n    );\\n\\n    bytes32 private s_lastReceivedMessageId; // Store the last received messageId.\\n    string private s_lastReceivedText; // Store the last received text.\\n\\n    IGhoToken public ghoToken;\\n    IERC20 public ghoErc;\\n    IRouterClient private s_router;\\n    LinkTokenInterface private s_linkToken;\\n    AggregatorV3Interface internal dataFeed;\\n    uint64 public destinationChainSelector = 16015286601757825753; //sepolia hardcoded for testing\\n    address public senderVault;\\n\\n    uint256 bucketIndex;\\n    uint256[] public activeBuckets;\\n    mapping(uint256 => Bucket) public allbuckets;\\n    mapping(address => uint256[]) public userBuckets;\\n\\n    /// @notice Constructor initializes the contract with the router address.\\n    /// @param router The address of the router contract.\\n    constructor(address router, address _ghoToken, address _link, address _senderVault) CCIPReceiver(router) {\\n        ghoToken = IGhoToken(_ghoToken);\\n        ghoErc = IERC20(_ghoToken);\\n        dataFeed = AggregatorV3Interface(\\n            0x007A22900a3B98143368Bd5906f8E17e9867581b  // BTC/USD mumbai\\n        );\\n        s_router = IRouterClient(router);\\n        s_linkToken = LinkTokenInterface(_link);\\n        senderVault = _senderVault;\\n    }\\n\\n    /// handle a received message\\n    function _ccipReceive(\\n        Client.Any2EVMMessage memory any2EvmMessage\\n    ) internal override {\\n        // s_lastReceivedMessageId = any2EvmMessage.messageId; // fetch the messageId\\n        // s_lastReceivedText = abi.decode(any2EvmMessage.data, (string)); // abi-decoding of the sent text\\n        // (string memory _name, uint256 _amount, address _user) = abi.decode(\\n        //     any2EvmMessage.data,\\n        //     (string, uint256, address)\\n        // );\\n\\n        (string memory action, uint256 id, uint256 collateral, uint256 amount, uint256 collateralWorth, address user) = abi.decode(\\n            any2EvmMessage.data,\\n            (string, uint256, uint256, uint256, uint256, address)\\n        );\\n\\n        activeBuckets.push(bucketIndex);\\n        userBuckets[user].push(bucketIndex);\\n        \\n        allbuckets[bucketIndex++] = \\n            Bucket({\\n                collateral: collateral,\\n                amount: amount,\\n                CollateralWorth: collateralWorth,\\n                user: user,\\n                drained: false\\n            });\\n\\n        ghoToken.mint(user, amount);\\n\\n        emit MessageReceived(\\n            any2EvmMessage.messageId,\\n            any2EvmMessage.sourceChainSelector, // fetch the source chain identifier (aka selector)\\n            abi.decode(any2EvmMessage.sender, (address)), // abi-decoding of the sender address,\\n            abi.decode(any2EvmMessage.data, (string))\\n        );\\n    }\\n\\n    function drain(uint256 id) public {\\n        require(bucketIndex > id , \\\"nonexistent bucket id\\\");\\n        Bucket storage chosenBucket =  allbuckets[id];\\n        require(chosenBucket.drained == false, \\\"cant drain empty bucket\\\");\\n        chosenBucket.drained = true;\\n        ghoErc.transferFrom(msg.sender, address(this), chosenBucket.amount);\\n        if (chosenBucket.user == msg.sender) {\\n            sendMessage(senderVault, id);\\n        } else {\\n        uint256 collateralWorth = (uint256(getChainlinkDataFeedLatestAnswer()) * chosenBucket.collateral) / uint256(getChainlinkDecimal()) / 18;\\n            require((chosenBucket.amount / 2 * 3) < collateralWorth,  \\\"Cant liquidate\\\");\\n            sendMessage(senderVault, id);\\n        }\\n    }\\n\\n    function getChainlinkDecimal() public view returns (uint8) {\\n        return dataFeed.decimals();\\n    }\\n\\n    function getChainlinkDataFeedLatestAnswer() public view returns (int) {\\n        // prettier-ignore\\n        (\\n            /* uint80 roundID */,\\n            int answer,\\n            /*uint startedAt*/,\\n            /*uint timeStamp*/,\\n            /*uint80 answeredInRound*/\\n        ) = dataFeed.latestRoundData();\\n        return answer;\\n    }\\n\\n    function sendMessage(\\n        address receiver,\\n        uint256 id\\n    ) public onlyOwner returns (bytes32 messageId) {\\n        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message\\n        Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({\\n            receiver: abi.encode(receiver), // ABI-encoded receiver address\\n            data: abi.encode(id, msg.sender), // ABI-encoded string\\n            tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array indicating no tokens are being sent\\n            extraArgs: Client._argsToBytes(\\n                // Additional arguments, setting gas limit\\n                Client.EVMExtraArgsV1({gasLimit: 600_000})\\n            ),\\n            // Set the feeToken  address, indicating LINK will be used for fees\\n            feeToken: address(s_linkToken)\\n        });\\n\\n        // Get the fee required to send the message\\n        uint256 fees = s_router.getFee(\\n            destinationChainSelector,\\n            evm2AnyMessage\\n        );\\n\\n        if (fees > s_linkToken.balanceOf(address(this)))\\n            revert NotEnoughBalance(s_linkToken.balanceOf(address(this)), fees);\\n\\n        // approve the Router to transfer LINK tokens on contract's behalf. It will spend the fees in LINK\\n        s_linkToken.approve(address(s_router), fees);\\n\\n        // Send the message through the router and store the returned message ID\\n        messageId = s_router.ccipSend(destinationChainSelector, evm2AnyMessage);\\n\\n        // Emit an event with message details\\n        emit MessageSent(\\n            messageId,\\n            destinationChainSelector,\\n            receiver,\\n            id,\\n            address(s_linkToken),\\n            fees\\n        );\\n\\n        // Return the message ID\\n        return messageId;\\n    }\\n\\n    /// @notice Fetches the details of the last received message.\\n    /// @return messageId The ID of the last received message.\\n    /// @return text The last received text.\\n    function getLastReceivedMessageDetails()\\n        external\\n        view\\n        returns (bytes32 messageId, string memory text)\\n    {\\n        return (s_lastReceivedMessageId, s_lastReceivedText);\\n    }\\n}\\n\",\"keccak256\":\"0x1b2673fc84633b60043d681444011d45a92ee113bbfb678765ebe09a716a8b19\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a060405260088054600160a01b600160e01b03191667de41ba4fc9d91ad960a01b1790553480156200003157600080fd5b5060405162001a5038038062001a50833981016040819052620000549162000262565b33806000866001600160a01b03811662000089576040516335fdcccd60e21b8152600060048201526024015b60405180910390fd5b6001600160a01b039081166080528216620000e75760405162461bcd60e51b815260206004820152601860248201527f43616e6e6f7420736574206f776e657220746f207a65726f0000000000000000604482015260640162000080565b600080546001600160a01b0319166001600160a01b03848116919091179091558116156200011a576200011a816200019a565b5050600480546001600160a01b03199081166001600160a01b0396871690811790925560058054821690921790915560088054727a22900a3b98143368bd5906f8e17e9867581b908316179055600680548216968616969096179095555060078054851692841692909217909155600980549093169116179055620002bf565b336001600160a01b03821603620001f45760405162461bcd60e51b815260206004820152601760248201527f43616e6e6f74207472616e7366657220746f2073656c66000000000000000000604482015260640162000080565b600180546001600160a01b0319166001600160a01b0383811691821790925560008054604051929316917fed8889f560326eb138920d842192f0eb3dd22b4f139c87a2c57538e05bae12789190a350565b80516001600160a01b03811681146200025d57600080fd5b919050565b600080600080608085870312156200027957600080fd5b620002848562000245565b9350620002946020860162000245565b9250620002a46040860162000245565b9150620002b46060860162000245565b905092959194509250565b60805161176e620002e2600039600081816102c4015261058f015261176e6000f3fe608060405234801561001057600080fd5b50600436106101165760003560e01c806379ba5097116100a2578063bea4dfb511610071578063bea4dfb5146102e8578063c2919040146102f0578063f2fde38b14610303578063f6b19c7414610316578063f9d53aeb1461032957600080fd5b806379ba50971461029457806385572ffb1461029e5780638da5cb5b146102b1578063b0f479a1146102c257600080fd5b806331db1ffc116100e957806331db1ffc1461018d57806351b1873d146101bf57806353c47df9146101d957806357ee1fe6146102565780635996db911461028157600080fd5b806301ffc9a71461011b57806311e66faa146101435780631a9c7ebb14610164578063263596a514610177575b600080fd5b61012e610129366004610ff1565b61033c565b60405190151581526020015b60405180910390f35b610156610151366004611022565b610373565b60405190815260200161013a565b610156610172366004611050565b610394565b61017f6103c5565b60405161013a9291906110cc565b6008546101a790600160a01b90046001600160401b031681565b6040516001600160401b03909116815260200161013a565b6101c7610462565b60405160ff909116815260200161013a565b6102236101e7366004611022565b600c602052600090815260409020805460018201546002830154600390930154919290916001600160a01b03811690600160a01b900460ff1685565b604080519586526020860194909452928401919091526001600160a01b031660608301521515608082015260a00161013a565b600554610269906001600160a01b031681565b6040516001600160a01b03909116815260200161013a565b600454610269906001600160a01b031681565b61029c6104d5565b005b61029c6102ac3660046110ed565b610584565b6000546001600160a01b0316610269565b7f0000000000000000000000000000000000000000000000000000000000000000610269565b6101566105e3565b600954610269906001600160a01b031681565b61029c610311366004611127565b610668565b61029c610324366004611022565b610679565b610156610337366004611050565b6108a7565b60006001600160e01b031982166385572ffb60e01b148061036d57506001600160e01b031982166301ffc9a760e01b145b92915050565b600b818154811061038357600080fd5b600091825260209091200154905081565b600d60205281600052604060002081815481106103b057600080fd5b90600052602060002001600091509150505481565b6000606060025460038080546103da90611144565b80601f016020809104026020016040519081016040528092919081815260200182805461040690611144565b80156104535780601f1061042857610100808354040283529160200191610453565b820191906000526020600020905b81548152906001019060200180831161043657829003601f168201915b50505050509050915091509091565b6008546040805163313ce56760e01b815290516000926001600160a01b03169163313ce5679160048083019260209291908290030181865afa1580156104ac573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104d0919061117e565b905090565b6001546001600160a01b0316331461052d5760405162461bcd60e51b815260206004820152601660248201527526bab9ba10313290383937b837b9b2b21037bbb732b960511b60448201526064015b60405180910390fd5b60008054336001600160a01b0319808316821784556001805490911690556040516001600160a01b0390921692909183917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a350565b336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146105cf576040516335fdcccd60e21b8152336004820152602401610524565b6105e06105db82611376565b610cd1565b50565b600080600860009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015610639573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061065d919061143c565b509195945050505050565b610670610ef3565b6105e081610f48565b80600a54116106c25760405162461bcd60e51b81526020600482015260156024820152741b9bdb995e1a5cdd195b9d08189d58dad95d081a59605a1b6044820152606401610524565b6000818152600c602052604090206003810154600160a01b900460ff161561072c5760405162461bcd60e51b815260206004820152601760248201527f63616e7420647261696e20656d707479206275636b65740000000000000000006044820152606401610524565b60038101805460ff60a01b1916600160a01b17905560055460018201546040516323b872dd60e01b815233600482015230602482015260448101919091526001600160a01b03909116906323b872dd906064016020604051808303816000875af115801561079e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107c2919061148c565b506003810154336001600160a01b03909116036107f4576009546107ef906001600160a01b0316836108a7565b505050565b60006012610800610462565b60ff1683600001546108106105e3565b61081a91906114c4565b61082491906114db565b61082e91906114db565b9050806002836001015461084291906114db565b61084d9060036114c4565b1061088b5760405162461bcd60e51b815260206004820152600e60248201526d43616e74206c697175696461746560901b6044820152606401610524565b6009546108a1906001600160a01b0316846108a7565b50505050565b60006108b1610ef3565b6040805160a081019091526001600160a01b03841660c08201526000908060e081016040516020818303038152906040528152602001843360405160200161090c9291909182526001600160a01b0316602082015260400190565b60408051601f198184030181529190528152602001600060405190808252806020026020018201604052801561096857816020015b60408051808201909152600080825260208201528152602001906001900390816109415790505b5081526007546001600160a01b0316602080830191909152604080518083018252620927c090819052815160248082019290925282518082039092018252604401825291820180516001600160e01b03166397a657c960e01b179052909101526006546008546040516320487ded60e01b81529293506000926001600160a01b03909216916320487ded91610a1391600160a01b9091046001600160401b03169086906004016114fd565b602060405180830381865afa158015610a30573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610a5491906115d6565b6007546040516370a0823160e01b81523060048201529192506001600160a01b0316906370a0823190602401602060405180830381865afa158015610a9d573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610ac191906115d6565b811115610b58576007546040516370a0823160e01b81523060048201526001600160a01b03909116906370a0823190602401602060405180830381865afa158015610b10573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610b3491906115d6565b604051634787a10360e11b8152600481019190915260248101829052604401610524565b60075460065460405163095ea7b360e01b81526001600160a01b0391821660048201526024810184905291169063095ea7b3906044016020604051808303816000875af1158015610bad573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610bd1919061148c565b506006546008546040516396f4e9f960e01b81526001600160a01b03909216916396f4e9f991610c1791600160a01b9091046001600160401b03169086906004016114fd565b6020604051808303816000875af1158015610c36573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610c5a91906115d6565b600854600754604080516001600160a01b03808b168252602082018a90529092169082015260608101849052919450600160a01b90046001600160401b03169084907feea8a479f07983d1364c4330c9bf3442a1cd421b79b16909bcc1867188ea676b9060800160405180910390a3505092915050565b6000806000806000808660600151806020019051810190610cf29190611634565b600a8054600b805460018181019092557f0175b7a638427703f0dbe7bb9bbf987a2551717b34e79f33b5b1008d1fa01db9018290556001600160a01b0384166000818152600d6020908152604080832080549586018155835281832090940194909455825160a0810184528981529384018890529183018690526060830152608082018190528254989e50969c50949a5092985090965094509092600c929182610d9b836116aa565b9091555081526020808201929092526040908101600020835181559183015160018301558281015160028301556060830151600390920180546080909401511515600160a01b026001600160a81b03199094166001600160a01b0393841617939093179092556004805492516340c10f1960e01b815292909116916340c10f1991610e3e9185918891016001600160a01b03929092168252602082015260400190565b600060405180830381600087803b158015610e5857600080fd5b505af1158015610e6c573d6000803e3d6000fd5b5050505086602001516001600160401b031687600001517fb1e312a29937cc11967b0e4a346fef1ae132424ebaba9dc6d90249dba053e87c8960400151806020019051810190610ebc91906116c3565b8a60600151806020019051810190610ed491906116e0565b604051610ee2929190611714565b60405180910390a350505050505050565b6000546001600160a01b03163314610f465760405162461bcd60e51b815260206004820152601660248201527527b7363c9031b0b63630b1363290313c9037bbb732b960511b6044820152606401610524565b565b336001600160a01b03821603610fa05760405162461bcd60e51b815260206004820152601760248201527f43616e6e6f74207472616e7366657220746f2073656c660000000000000000006044820152606401610524565b600180546001600160a01b0319166001600160a01b0383811691821790925560008054604051929316917fed8889f560326eb138920d842192f0eb3dd22b4f139c87a2c57538e05bae12789190a350565b60006020828403121561100357600080fd5b81356001600160e01b03198116811461101b57600080fd5b9392505050565b60006020828403121561103457600080fd5b5035919050565b6001600160a01b03811681146105e057600080fd5b6000806040838503121561106357600080fd5b823561106e8161103b565b946020939093013593505050565b60005b8381101561109757818101518382015260200161107f565b50506000910152565b600081518084526110b881602086016020860161107c565b601f01601f19169290920160200192915050565b8281526040602082015260006110e560408301846110a0565b949350505050565b6000602082840312156110ff57600080fd5b81356001600160401b0381111561111557600080fd5b820160a0818503121561101b57600080fd5b60006020828403121561113957600080fd5b813561101b8161103b565b600181811c9082168061115857607f821691505b60208210810361117857634e487b7160e01b600052602260045260246000fd5b50919050565b60006020828403121561119057600080fd5b815160ff8116811461101b57600080fd5b634e487b7160e01b600052604160045260246000fd5b604080519081016001600160401b03811182821017156111d9576111d96111a1565b60405290565b60405160a081016001600160401b03811182821017156111d9576111d96111a1565b604051601f8201601f191681016001600160401b0381118282101715611229576112296111a1565b604052919050565b80356001600160401b038116811461124857600080fd5b919050565b60006001600160401b03821115611266576112666111a1565b50601f01601f191660200190565b600082601f83011261128557600080fd5b81356112986112938261124d565b611201565b8181528460208386010111156112ad57600080fd5b816020850160208301376000918101602001919091529392505050565b600082601f8301126112db57600080fd5b813560206001600160401b038211156112f6576112f66111a1565b611304818360051b01611201565b82815260069290921b8401810191818101908684111561132357600080fd5b8286015b8481101561136b57604081890312156113405760008081fd5b6113486111b7565b81356113538161103b565b81528185013585820152835291830191604001611327565b509695505050505050565b600060a0823603121561138857600080fd5b6113906111df565b823581526113a060208401611231565b602082015260408301356001600160401b03808211156113bf57600080fd5b6113cb36838701611274565b604084015260608501359150808211156113e457600080fd5b6113f036838701611274565b6060840152608085013591508082111561140957600080fd5b50611416368286016112ca565b60808301525092915050565b805169ffffffffffffffffffff8116811461124857600080fd5b600080600080600060a0868803121561145457600080fd5b61145d86611422565b945060208601519350604086015192506060860151915061148060808701611422565b90509295509295909350565b60006020828403121561149e57600080fd5b8151801515811461101b57600080fd5b634e487b7160e01b600052601160045260246000fd5b808202811582820484141761036d5761036d6114ae565b6000826114f857634e487b7160e01b600052601260045260246000fd5b500490565b600060406001600160401b038516835260208181850152845160a08386015261152960e08601826110a0565b905081860151603f198087840301606088015261154683836110a0565b88860151888203830160808a01528051808352908601945060009350908501905b8084101561159957845180516001600160a01b0316835286015186830152938501936001939093019290860190611567565b5060608901516001600160a01b031660a08901526080890151888203830160c08a015295506115c881876110a0565b9a9950505050505050505050565b6000602082840312156115e857600080fd5b5051919050565b600082601f83011261160057600080fd5b815161160e6112938261124d565b81815284602083860101111561162357600080fd5b6110e582602083016020870161107c565b60008060008060008060c0878903121561164d57600080fd5b86516001600160401b0381111561166357600080fd5b61166f89828a016115ef565b9650506020870151945060408701519350606087015192506080870151915060a087015161169c8161103b565b809150509295509295509295565b6000600182016116bc576116bc6114ae565b5060010190565b6000602082840312156116d557600080fd5b815161101b8161103b565b6000602082840312156116f257600080fd5b81516001600160401b0381111561170857600080fd5b6110e5848285016115ef565b6001600160a01b03831681526040602082018190526000906110e5908301846110a056fea2646970667358221220cd224d02c2e48d706435b9d8fa8aa42da4bc9a0042e123685db0baf816111baf64736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101165760003560e01c806379ba5097116100a2578063bea4dfb511610071578063bea4dfb5146102e8578063c2919040146102f0578063f2fde38b14610303578063f6b19c7414610316578063f9d53aeb1461032957600080fd5b806379ba50971461029457806385572ffb1461029e5780638da5cb5b146102b1578063b0f479a1146102c257600080fd5b806331db1ffc116100e957806331db1ffc1461018d57806351b1873d146101bf57806353c47df9146101d957806357ee1fe6146102565780635996db911461028157600080fd5b806301ffc9a71461011b57806311e66faa146101435780631a9c7ebb14610164578063263596a514610177575b600080fd5b61012e610129366004610ff1565b61033c565b60405190151581526020015b60405180910390f35b610156610151366004611022565b610373565b60405190815260200161013a565b610156610172366004611050565b610394565b61017f6103c5565b60405161013a9291906110cc565b6008546101a790600160a01b90046001600160401b031681565b6040516001600160401b03909116815260200161013a565b6101c7610462565b60405160ff909116815260200161013a565b6102236101e7366004611022565b600c602052600090815260409020805460018201546002830154600390930154919290916001600160a01b03811690600160a01b900460ff1685565b604080519586526020860194909452928401919091526001600160a01b031660608301521515608082015260a00161013a565b600554610269906001600160a01b031681565b6040516001600160a01b03909116815260200161013a565b600454610269906001600160a01b031681565b61029c6104d5565b005b61029c6102ac3660046110ed565b610584565b6000546001600160a01b0316610269565b7f0000000000000000000000000000000000000000000000000000000000000000610269565b6101566105e3565b600954610269906001600160a01b031681565b61029c610311366004611127565b610668565b61029c610324366004611022565b610679565b610156610337366004611050565b6108a7565b60006001600160e01b031982166385572ffb60e01b148061036d57506001600160e01b031982166301ffc9a760e01b145b92915050565b600b818154811061038357600080fd5b600091825260209091200154905081565b600d60205281600052604060002081815481106103b057600080fd5b90600052602060002001600091509150505481565b6000606060025460038080546103da90611144565b80601f016020809104026020016040519081016040528092919081815260200182805461040690611144565b80156104535780601f1061042857610100808354040283529160200191610453565b820191906000526020600020905b81548152906001019060200180831161043657829003601f168201915b50505050509050915091509091565b6008546040805163313ce56760e01b815290516000926001600160a01b03169163313ce5679160048083019260209291908290030181865afa1580156104ac573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104d0919061117e565b905090565b6001546001600160a01b0316331461052d5760405162461bcd60e51b815260206004820152601660248201527526bab9ba10313290383937b837b9b2b21037bbb732b960511b60448201526064015b60405180910390fd5b60008054336001600160a01b0319808316821784556001805490911690556040516001600160a01b0390921692909183917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a350565b336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146105cf576040516335fdcccd60e21b8152336004820152602401610524565b6105e06105db82611376565b610cd1565b50565b600080600860009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015610639573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061065d919061143c565b509195945050505050565b610670610ef3565b6105e081610f48565b80600a54116106c25760405162461bcd60e51b81526020600482015260156024820152741b9bdb995e1a5cdd195b9d08189d58dad95d081a59605a1b6044820152606401610524565b6000818152600c602052604090206003810154600160a01b900460ff161561072c5760405162461bcd60e51b815260206004820152601760248201527f63616e7420647261696e20656d707479206275636b65740000000000000000006044820152606401610524565b60038101805460ff60a01b1916600160a01b17905560055460018201546040516323b872dd60e01b815233600482015230602482015260448101919091526001600160a01b03909116906323b872dd906064016020604051808303816000875af115801561079e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107c2919061148c565b506003810154336001600160a01b03909116036107f4576009546107ef906001600160a01b0316836108a7565b505050565b60006012610800610462565b60ff1683600001546108106105e3565b61081a91906114c4565b61082491906114db565b61082e91906114db565b9050806002836001015461084291906114db565b61084d9060036114c4565b1061088b5760405162461bcd60e51b815260206004820152600e60248201526d43616e74206c697175696461746560901b6044820152606401610524565b6009546108a1906001600160a01b0316846108a7565b50505050565b60006108b1610ef3565b6040805160a081019091526001600160a01b03841660c08201526000908060e081016040516020818303038152906040528152602001843360405160200161090c9291909182526001600160a01b0316602082015260400190565b60408051601f198184030181529190528152602001600060405190808252806020026020018201604052801561096857816020015b60408051808201909152600080825260208201528152602001906001900390816109415790505b5081526007546001600160a01b0316602080830191909152604080518083018252620927c090819052815160248082019290925282518082039092018252604401825291820180516001600160e01b03166397a657c960e01b179052909101526006546008546040516320487ded60e01b81529293506000926001600160a01b03909216916320487ded91610a1391600160a01b9091046001600160401b03169086906004016114fd565b602060405180830381865afa158015610a30573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610a5491906115d6565b6007546040516370a0823160e01b81523060048201529192506001600160a01b0316906370a0823190602401602060405180830381865afa158015610a9d573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610ac191906115d6565b811115610b58576007546040516370a0823160e01b81523060048201526001600160a01b03909116906370a0823190602401602060405180830381865afa158015610b10573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610b3491906115d6565b604051634787a10360e11b8152600481019190915260248101829052604401610524565b60075460065460405163095ea7b360e01b81526001600160a01b0391821660048201526024810184905291169063095ea7b3906044016020604051808303816000875af1158015610bad573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610bd1919061148c565b506006546008546040516396f4e9f960e01b81526001600160a01b03909216916396f4e9f991610c1791600160a01b9091046001600160401b03169086906004016114fd565b6020604051808303816000875af1158015610c36573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610c5a91906115d6565b600854600754604080516001600160a01b03808b168252602082018a90529092169082015260608101849052919450600160a01b90046001600160401b03169084907feea8a479f07983d1364c4330c9bf3442a1cd421b79b16909bcc1867188ea676b9060800160405180910390a3505092915050565b6000806000806000808660600151806020019051810190610cf29190611634565b600a8054600b805460018181019092557f0175b7a638427703f0dbe7bb9bbf987a2551717b34e79f33b5b1008d1fa01db9018290556001600160a01b0384166000818152600d6020908152604080832080549586018155835281832090940194909455825160a0810184528981529384018890529183018690526060830152608082018190528254989e50969c50949a5092985090965094509092600c929182610d9b836116aa565b9091555081526020808201929092526040908101600020835181559183015160018301558281015160028301556060830151600390920180546080909401511515600160a01b026001600160a81b03199094166001600160a01b0393841617939093179092556004805492516340c10f1960e01b815292909116916340c10f1991610e3e9185918891016001600160a01b03929092168252602082015260400190565b600060405180830381600087803b158015610e5857600080fd5b505af1158015610e6c573d6000803e3d6000fd5b5050505086602001516001600160401b031687600001517fb1e312a29937cc11967b0e4a346fef1ae132424ebaba9dc6d90249dba053e87c8960400151806020019051810190610ebc91906116c3565b8a60600151806020019051810190610ed491906116e0565b604051610ee2929190611714565b60405180910390a350505050505050565b6000546001600160a01b03163314610f465760405162461bcd60e51b815260206004820152601660248201527527b7363c9031b0b63630b1363290313c9037bbb732b960511b6044820152606401610524565b565b336001600160a01b03821603610fa05760405162461bcd60e51b815260206004820152601760248201527f43616e6e6f74207472616e7366657220746f2073656c660000000000000000006044820152606401610524565b600180546001600160a01b0319166001600160a01b0383811691821790925560008054604051929316917fed8889f560326eb138920d842192f0eb3dd22b4f139c87a2c57538e05bae12789190a350565b60006020828403121561100357600080fd5b81356001600160e01b03198116811461101b57600080fd5b9392505050565b60006020828403121561103457600080fd5b5035919050565b6001600160a01b03811681146105e057600080fd5b6000806040838503121561106357600080fd5b823561106e8161103b565b946020939093013593505050565b60005b8381101561109757818101518382015260200161107f565b50506000910152565b600081518084526110b881602086016020860161107c565b601f01601f19169290920160200192915050565b8281526040602082015260006110e560408301846110a0565b949350505050565b6000602082840312156110ff57600080fd5b81356001600160401b0381111561111557600080fd5b820160a0818503121561101b57600080fd5b60006020828403121561113957600080fd5b813561101b8161103b565b600181811c9082168061115857607f821691505b60208210810361117857634e487b7160e01b600052602260045260246000fd5b50919050565b60006020828403121561119057600080fd5b815160ff8116811461101b57600080fd5b634e487b7160e01b600052604160045260246000fd5b604080519081016001600160401b03811182821017156111d9576111d96111a1565b60405290565b60405160a081016001600160401b03811182821017156111d9576111d96111a1565b604051601f8201601f191681016001600160401b0381118282101715611229576112296111a1565b604052919050565b80356001600160401b038116811461124857600080fd5b919050565b60006001600160401b03821115611266576112666111a1565b50601f01601f191660200190565b600082601f83011261128557600080fd5b81356112986112938261124d565b611201565b8181528460208386010111156112ad57600080fd5b816020850160208301376000918101602001919091529392505050565b600082601f8301126112db57600080fd5b813560206001600160401b038211156112f6576112f66111a1565b611304818360051b01611201565b82815260069290921b8401810191818101908684111561132357600080fd5b8286015b8481101561136b57604081890312156113405760008081fd5b6113486111b7565b81356113538161103b565b81528185013585820152835291830191604001611327565b509695505050505050565b600060a0823603121561138857600080fd5b6113906111df565b823581526113a060208401611231565b602082015260408301356001600160401b03808211156113bf57600080fd5b6113cb36838701611274565b604084015260608501359150808211156113e457600080fd5b6113f036838701611274565b6060840152608085013591508082111561140957600080fd5b50611416368286016112ca565b60808301525092915050565b805169ffffffffffffffffffff8116811461124857600080fd5b600080600080600060a0868803121561145457600080fd5b61145d86611422565b945060208601519350604086015192506060860151915061148060808701611422565b90509295509295909350565b60006020828403121561149e57600080fd5b8151801515811461101b57600080fd5b634e487b7160e01b600052601160045260246000fd5b808202811582820484141761036d5761036d6114ae565b6000826114f857634e487b7160e01b600052601260045260246000fd5b500490565b600060406001600160401b038516835260208181850152845160a08386015261152960e08601826110a0565b905081860151603f198087840301606088015261154683836110a0565b88860151888203830160808a01528051808352908601945060009350908501905b8084101561159957845180516001600160a01b0316835286015186830152938501936001939093019290860190611567565b5060608901516001600160a01b031660a08901526080890151888203830160c08a015295506115c881876110a0565b9a9950505050505050505050565b6000602082840312156115e857600080fd5b5051919050565b600082601f83011261160057600080fd5b815161160e6112938261124d565b81815284602083860101111561162357600080fd5b6110e582602083016020870161107c565b60008060008060008060c0878903121561164d57600080fd5b86516001600160401b0381111561166357600080fd5b61166f89828a016115ef565b9650506020870151945060408701519350606087015192506080870151915060a087015161169c8161103b565b809150509295509295509295565b6000600182016116bc576116bc6114ae565b5060010190565b6000602082840312156116d557600080fd5b815161101b8161103b565b6000602082840312156116f257600080fd5b81516001600160401b0381111561170857600080fd5b6110e5848285016115ef565b6001600160a01b03831681526040602082018190526000906110e5908301846110a056fea2646970667358221220cd224d02c2e48d706435b9d8fa8aa42da4bc9a0042e123685db0baf816111baf64736f6c63430008140033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "ccipReceive((bytes32,uint64,bytes,bytes,(address,uint256)[]))": {
+        "details": "Note ensure you check the msg.sender is the OffRampRouter",
+        "params": {
+          "message": "CCIP Message"
+        }
+      },
+      "constructor": {
+        "params": {
+          "router": "The address of the router contract."
+        }
+      },
+      "getLastReceivedMessageDetails()": {
+        "returns": {
+          "messageId": "The ID of the last received message.",
+          "text": "The last received text."
+        }
+      },
+      "getRouter()": {
+        "returns": {
+          "_0": "i_router address"
+        }
+      },
+      "supportsInterface(bytes4)": {
+        "details": "Should indicate whether the contract implements IAny2EVMMessageReceiver e.g. return interfaceId == type(IAny2EVMMessageReceiver).interfaceId || interfaceId == type(IERC165).interfaceId This allows CCIP to check if ccipReceive is available before calling it. If this returns false or reverts, only tokens are transferred to the receiver. If this returns true, tokens are transferred and ccipReceive is called atomically. Additionally, if the receiver address does not have code associated with it at the time of execution (EXTCODESIZE returns 0), only tokens will be transferred.",
+        "params": {
+          "interfaceId": "The interfaceId to check"
+        },
+        "returns": {
+          "_0": "true if the interfaceId is supported"
+        }
+      }
+    },
+    "title": "- A simple contract for receiving string data across chains.",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "acceptOwnership()": {
+        "notice": "Allows an ownership transfer to be completed by the recipient."
+      },
+      "ccipReceive((bytes32,uint64,bytes,bytes,(address,uint256)[]))": {
+        "notice": "Called by the Router to deliver a message. If this reverts, any token transfers also revert. The message will move to a FAILED state and become available for manual execution."
+      },
+      "constructor": {
+        "notice": "Constructor initializes the contract with the router address."
+      },
+      "getLastReceivedMessageDetails()": {
+        "notice": "Fetches the details of the last received message."
+      },
+      "getRouter()": {
+        "notice": "Return the current router"
+      },
+      "owner()": {
+        "notice": "Get the current owner"
+      },
+      "supportsInterface(bytes4)": {
+        "notice": "IERC165 supports an interfaceId"
+      },
+      "transferOwnership(address)": {
+        "notice": "Allows an owner to begin transferring ownership to a new address, pending."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 268,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 270,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_pendingOwner",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 1019,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_lastReceivedMessageId",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_bytes32"
+      },
+      {
+        "astId": 1021,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_lastReceivedText",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_string_storage"
+      },
+      {
+        "astId": 1024,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "ghoToken",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_contract(IGhoToken)954"
+      },
+      {
+        "astId": 1027,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "ghoErc",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_contract(IERC20)827"
+      },
+      {
+        "astId": 1030,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_router",
+        "offset": 0,
+        "slot": "6",
+        "type": "t_contract(IRouterClient)184"
+      },
+      {
+        "astId": 1033,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "s_linkToken",
+        "offset": 0,
+        "slot": "7",
+        "type": "t_contract(LinkTokenInterface)607"
+      },
+      {
+        "astId": 1036,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "dataFeed",
+        "offset": 0,
+        "slot": "8",
+        "type": "t_contract(AggregatorV3Interface)512"
+      },
+      {
+        "astId": 1039,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "destinationChainSelector",
+        "offset": 20,
+        "slot": "8",
+        "type": "t_uint64"
+      },
+      {
+        "astId": 1041,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "senderVault",
+        "offset": 0,
+        "slot": "9",
+        "type": "t_address"
+      },
+      {
+        "astId": 1043,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "bucketIndex",
+        "offset": 0,
+        "slot": "10",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1046,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "activeBuckets",
+        "offset": 0,
+        "slot": "11",
+        "type": "t_array(t_uint256)dyn_storage"
+      },
+      {
+        "astId": 1051,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "allbuckets",
+        "offset": 0,
+        "slot": "12",
+        "type": "t_mapping(t_uint256,t_struct(Bucket)982_storage)"
+      },
+      {
+        "astId": 1056,
+        "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+        "label": "userBuckets",
+        "offset": 0,
+        "slot": "13",
+        "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_uint256)dyn_storage": {
+        "base": "t_uint256",
+        "encoding": "dynamic_array",
+        "label": "uint256[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_contract(AggregatorV3Interface)512": {
+        "encoding": "inplace",
+        "label": "contract AggregatorV3Interface",
+        "numberOfBytes": "20"
+      },
+      "t_contract(IERC20)827": {
+        "encoding": "inplace",
+        "label": "contract IERC20",
+        "numberOfBytes": "20"
+      },
+      "t_contract(IGhoToken)954": {
+        "encoding": "inplace",
+        "label": "contract IGhoToken",
+        "numberOfBytes": "20"
+      },
+      "t_contract(IRouterClient)184": {
+        "encoding": "inplace",
+        "label": "contract IRouterClient",
+        "numberOfBytes": "20"
+      },
+      "t_contract(LinkTokenInterface)607": {
+        "encoding": "inplace",
+        "label": "contract LinkTokenInterface",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_uint256)dyn_storage"
+      },
+      "t_mapping(t_uint256,t_struct(Bucket)982_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct Bucket)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Bucket)982_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Bucket)982_storage": {
+        "encoding": "inplace",
+        "label": "struct Bucket",
+        "members": [
+          {
+            "astId": 973,
+            "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+            "label": "collateral",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 975,
+            "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+            "label": "amount",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+            "label": "CollateralWorth",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 979,
+            "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+            "label": "user",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address"
+          },
+          {
+            "astId": 981,
+            "contract": "contracts/Receiver.sol:FacilitatorReceiver",
+            "label": "drained",
+            "offset": 20,
+            "slot": "3",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "128"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint64": {
+        "encoding": "inplace",
+        "label": "uint64",
+        "numberOfBytes": "8"
+      }
+    }
+  }
+}
