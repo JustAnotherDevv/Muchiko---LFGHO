@@ -1,6 +1,6 @@
 
 <p align="center text-center">
-  <h1 align="center ">Muchiko</h1>
+  <h1 align="center ">Muchiko GHO Facilitator</h1>
 </p>
 
 <p align="center">
@@ -15,6 +15,10 @@
 Muchiko allows users to utilize their exisitng liquidity from other chains to mint GHO stablecoins 
 using this facilitator on polygon while the original colateral remains locked on the other chain 
 as long as its value does not drop below specified level in which case liquidation can occur.
+
+This MVP uses collateral that is 
+locked on other chain, GHO value is being protected by monitoring collateral value using  Chainlink Oracles.
+If the tokens value drop below certain level liquidation can occur.
 
 
 <p align="center text-center">
