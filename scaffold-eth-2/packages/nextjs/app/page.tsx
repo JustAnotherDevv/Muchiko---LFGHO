@@ -7,12 +7,20 @@ import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Home: NextPage = () => {
   const [rangeVal, setRangeVal] = useState(10);
+  const [ghoVal, setGhoVal] = useState(5);
   const [buckets, setBuckets] = useState([]);
 
   const handleRangeChange = event => {
-    if (event.target.value < 0 || event.target.value > 100) return;
+    if (event.target.value < 1 || event.target.value > 100) return;
     setRangeVal(event.target.value);
   };
+
+  const handleGhoChange = event => {
+    if (event.target.value < 1 || event.target.value > 100) return;
+    setGhoVal(event.target.value);
+  };
+
+  const calculatedGhoValue = rangeVal / 2;
 
   return (
     <>
@@ -20,8 +28,8 @@ const Home: NextPage = () => {
         <h1 className="text-center mb-8"></h1>
         <div className="px-5 flex flex-col text-center gap-8 bg-base-300 px-16 py-12 rounded-3xl">
           <span className="block text-4xl font-bold">Deposit Liquidity</span>
-          <div className="px-5 flex gap-8 mx-auto">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+          <div className="px-5 flex gap-12 mx-auto">
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-64 rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>Locked Collateral</p>
               <input
@@ -43,24 +51,24 @@ const Home: NextPage = () => {
                 className="input input-bordered w-full max-w-xs mt-4"
               />
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-64 rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>Received GHO</p>
               <input
                 type="range"
                 min={0}
-                max="100"
-                value={`${rangeVal * 2}`}
+                max={calculatedGhoValue}
+                value={ghoVal}
                 className="range"
                 step="1"
-                onChange={handleRangeChange}
+                onChange={handleGhoChange}
               />
               <input
                 type="number"
                 min={0}
-                max="100"
-                value={rangeVal}
-                onChange={handleRangeChange}
+                max={calculatedGhoValue}
+                value={ghoVal}
+                onChange={handleGhoChange}
                 placeholder="Type here"
                 className="input input-bordered w-full max-w-xs mt-4"
               />

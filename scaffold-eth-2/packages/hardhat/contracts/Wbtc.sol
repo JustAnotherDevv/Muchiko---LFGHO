@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
 contract BTC is ERC20, ERC20Burnable, Ownable, ERC20Permit {
-    constructor(address initialOwner)
+    constructor()
         ERC20("BTC", "BTC")
-        Ownable(initialOwner)
+        Ownable()
         ERC20Permit("BTC")
     {}
 
