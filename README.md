@@ -25,6 +25,10 @@ If the tokens value drop below certain level liquidation can occur.
   <img src="images/graph.PNG" width="800">
 </p>
 
+- In the current version maximum amount of GHO tokens that can be minted is set by facilitators limit set in the GHO contract
+- Maximum amount of GHO that can be borrowed is 50% of collateral worth
+- Once collateral worth drops below 150% of borrowed GHO's amount anyone can liquidate position.
+
 
 <p align="center text-center">
   <h2 align="center ">Setup</h2>
