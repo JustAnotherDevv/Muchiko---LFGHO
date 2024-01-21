@@ -21,6 +21,11 @@ locked on other chain, GHO value is being protected by monitoring collateral val
 If the tokens value drop below certain level liquidation can occur.
 
 
+<p align="center">
+  <img src="images/graph.PNG" width="800">
+</p>
+
+
 <p align="center text-center">
   <h2 align="center ">Setup</h2>
 </p>
