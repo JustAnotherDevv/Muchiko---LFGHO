@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   const { data: userBuckets, refetch: refetchBuckets } = useScaffoldContractRead({
     contractName: "Sender",
     functionName: "userBuckets",
-    args: ["0x6e7F1a7d1Bac9c7784c7C7Cdb098A727F62E95c7", parseUnits("0", 0)],
+    args: ["0x6e7F1a7d1Bac9c7784c7C7Cdb098A727F62E95c7", BigInt(0)],
   });
 
   const { data: btcBalance } = useScaffoldContractRead({

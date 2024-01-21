@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   11155111: {
     BTC: {
-      address: "0x798FD40D294b09Ed0cD4b27Ddaa7DB909408Af0f",
+      address: "0x7CdAa52B468E4ecfda618187a39daf2e435C19c2",
       abi: [
         {
           inputs: [],
@@ -529,7 +529,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     GhoToken: {
-      address: "0xBA39b8534DF42a2f7F337E6491fF0D768AD30c06",
+      address: "0x163Ae05b5A5Cb18896D260B1F1B754764e190764",
       abi: [
         {
           inputs: [
@@ -1321,7 +1321,7 @@ const deployedContracts = {
       },
     },
     Receiver: {
-      address: "0xBD7255b67CA7FbD78dc06554c85Afc11aCE5A584",
+      address: "0x441fe0043818a48fb60399f705D987208F87eB05",
       abi: [
         {
           inputs: [
@@ -1837,7 +1837,7 @@ const deployedContracts = {
       },
     },
     Sender: {
-      address: "0xBe4165699108C37067ABba12dAC5f7F6D0525284",
+      address: "0x4e4B57891b78fcf5197D37eCe1ddaD6b6Cf59a40",
       abi: [
         {
           inputs: [
