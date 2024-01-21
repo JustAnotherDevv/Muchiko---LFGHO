@@ -2,16 +2,36 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
 import type { NextPage } from "next";
+import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
-  const [rangeVal, setRangeVal] = useState(10);
+  const [rangeVal, setRangeVal] = useState(1);
   const [ghoVal, setGhoVal] = useState(5);
   const [buckets, setBuckets] = useState([]);
 
+  const chain = useNetwork();
+  const { address } = useAccount();
+  const { isConnected } = useAccount();
+
+  const { data: userBuckets, refetch } = useScaffoldContractRead({
+    contractName: "Sender",
+    functionName: "userBuckets",
+    args: [address, BigInt(0)],
+  });
+
+  const { data: btcBalance } = useScaffoldContractRead({
+    contractName: "BTC",
+    functionName: "balanceOf",
+    args: [address],
+  });
+
   const handleRangeChange = event => {
-    if (event.target.value < 1 || event.target.value > 100) return;
+    if (event.target.value < 1 || event.target.value > calc(formatUnits(btcBalance.toString(), 18))) return;
     setRangeVal(event.target.value);
   };
 
@@ -22,20 +42,48 @@ const Home: NextPage = () => {
 
   const calculatedGhoValue = rangeVal / 2;
 
+  useEffect(() => {
+    (async () => {
+      console.log(isConnected, " ", address);
+      if (isConnected && address) {
+        console.log(await refetch());
+        userBuckets.refetch();
+      }
+    })();
+  }, [isConnected, address]);
+
+  function calc(theform) {
+    var num = theform;
+    var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0];
+    console.log(with2Decimals);
+    return with2Decimals;
+  }
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <h1 className="text-center mb-8"></h1>
         <div className="px-5 flex flex-col text-center gap-8 bg-base-300 px-16 py-12 rounded-3xl">
           <span className="block text-4xl font-bold">Deposit Liquidity</span>
-          <div className="px-5 flex gap-12 mx-auto">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-64 rounded-3xl">
+          {/* {userBuckets
+            ? JSON.parse(
+                JSON.stringify(
+                  userBuckets,
+                  (key, value) => (typeof value === "bigint" ? value.toString() : value), // return everything else unchanged
+                ),
+              )
+            : "empty"} */}
+          {/* {parseInt(userBuckets)} */}
+          {btcBalance ? parseInt(formatUnits(btcBalance.toString(), 18)) : ""}
+          <div className="px-5 flex flex-col gap-12 mx-auto w-full">
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-full rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>Locked Collateral</p>
+              <p className="font-bold">MAX: {btcBalance ? calc(formatUnits(btcBalance.toString(), 18)) : 0}</p>
               <input
                 type="range"
                 min={0}
-                max="100"
+                max={btcBalance ? calc(formatUnits(btcBalance.toString(), 18)) : 0}
                 value={rangeVal}
                 className="range"
                 step="1"
@@ -47,11 +95,11 @@ const Home: NextPage = () => {
                 max="100"
                 value={rangeVal}
                 onChange={handleRangeChange}
-                placeholder="Type here"
+                placeholder={`MAX: ${btcBalance ? parseFloat(formatUnits(btcBalance.toString(), 18)) : 0}`}
                 className="input input-bordered w-full max-w-xs mt-4"
               />
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-64 rounded-3xl">
+            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-full rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>Received GHO</p>
               <input
